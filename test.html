@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Test Automation</title>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js';
+        import { getAuth, signInAnonymously, createUserWithEmailAndPassword, sendSignInLinkToEmail, signInWithCustomToken, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-firestore.js';
+        import { getStorage } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-storage.js';
+
+        // Initialize Firebase with your configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4iA8S9NeAHYUo5MUWME4EdXNOGe-EuCc", // Add your API key here
+            authDomain: "onedrive-android.firebaseapp.com",
+            databaseURL: "https://onedrive-android.firebaseio.co",
+            projectId: "onedrive-android",
+            storageBucket: "onedrive-android.appspot.com",
+            appId: "111",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const firestore = getFirestore(app);
+        const storage = getStorage(app);
+
+        async function checkFirebase() {
+            // Firebase Authentication Checks
+            try {
+                const anonymousUser = await signInAnonymously(auth);
+                console.log("Anonymous Login Success:", anonymousUser);
+
+                // Perform other authentication checks here
+            } catch (error) {
+                console.error("Anonymous Login Error:", error);
+            }
+
+            // Firebase Firestore Checks
+            try {
+                const docRef = doc(collection(firestore, "test"), "testuser");
+                await setDoc(docRef, { name: "Hello 123123 - h1 aditi new new new new" });
+                console.log("Firestore Write Success");
+
+                // Perform Firestore read checks here
+            } catch (error) {
+                console.error("Firestore Write Error:", error);
+            }
+
+            // Firebase Storage Checks
+            const storageRef = ref(storage, "/aditi.txt");
+
+            try {
+                await put(storageRef, new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x20, 0x6c, 0x61, 0x6d, 0x73, 0x63, 0x75, 0x6e]));
+                console.log("Storage Upload Success");
+
+                // Perform Storage download checks here
+            } catch (error) {
+                console.error("Storage Upload Error:", error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Firebase Test Automation</h1>
+    <button onclick="checkFirebase()">Check Firebase Configuration</button>
+</body>
+</html>
