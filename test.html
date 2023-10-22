@@ -1,73 +1,72 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Firebase Test Automation</title>
+    <title>Firebase Authentication Misconfiguration Checker</title>
 </head>
 <body>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-analytics.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-functions.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-messaging.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-storage.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-performance.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-remote-config.js"></script>
-
-<div>
+    <h1>Firebase Authentication Misconfiguration Checker</h1>
     <div>
-        <font style="font-weight: bolder;font-size: 1.5rem">Setup:</font>
-        <br/>
-        <label>ProjectID: </label>
-        <input id="projectId" type="text" placeholder="Enter your Project ID"/>
-        <label style="margin-left: 20px">ApiKey: </label>
-        <input id="apiKey" style="width: 40%" type="text" placeholder="Enter your API Key"/>
-        <button onclick="initializeFirebase()">Submit</button>
+        <label for="projectId">Project ID:</label>
+        <input type="text" id="projectId" value="your-firebase-project-id">
     </div>
-    <hr/>
     <div>
-        <font style="font-weight: bolder;font-size: 1.5rem">Config:</font>
-        <br/>
-        <textarea cols="100" rows="10" disabled style="overflow:auto;resize:none" id="configValue"></textarea>
+        <label for="apiKey">API Key:</label>
+        <input type="text" id="apiKey" value="your-firebase-api-key">
     </div>
-    <!-- Rest of your UI elements -->
-</div>
-
-<script>
-    var firebaseConfig; // Firebase configuration object
-
-    function initializeFirebase() {
-        var project_id_value = document.getElementById("projectId").value;
-        var api_key_value = document.getElementById("apiKey").value;
-        firebaseConfig = {
-            apiKey: api_key_value,
-            authDomain: project_id_value + ".firebaseapp.com",
-            databaseURL: "https://" + project_id_value + ".firebaseio.com",
-            projectId: project_id_value,
-            storageBucket: project_id_value + ".appspot.com",
-            appId: "111",
-            measurementId: "111222"
-        };
-        var myJSON = JSON.stringify(firebaseConfig, null, "\t");
-        document.getElementById("configValue").value = myJSON;
-
-        // Now, you can initialize Firebase using this configuration
-        initializeFirebaseApp();
-    }
-
-    function initializeFirebaseApp() {
-        try {
-            firebase.initializeApp(firebaseConfig);
-            // Check if Firebase Authentication is working by attempting to sign in with a test user
-            firebase.auth().signInWithEmailAndPassword("test@example.com", "password").then(function(user) {
-                console.log("Firebase Authentication is correctly configured. User signed in.");
-            }).catch(function(error) {
-                console.error("Firebase Authentication configuration issue: " + error);
-            });
-        } catch (error) {
-            console.error("Failed to initialize Firebase: " + error);
+    <div>
+        <button onclick="checkMisconfigurations()">Check Misconfigurations</button>
+    </div>
+    <hr>
+    <div>
+        <h2>Results:</h2>
+        <pre id="results"></pre>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase with the provided project ID and API key
+        function initializeFirebase(projectId, apiKey) {
+            const firebaseConfig = {
+                apiKey: apiKey,
+                authDomain: `${projectId}.firebaseapp.com`,
+                projectId: projectId,
+            };
+            return firebase.initializeApp(firebaseConfig);
         }
-    }
-</script>
+
+        // Check for Firebase Authentication misconfigurations
+        function checkMisconfigurations() {
+            const projectId = document.getElementById("projectId").value;
+            const apiKey = document.getElementById("apiKey").value;
+            const resultsElement = document.getElementById("results");
+
+            resultsElement.textContent = "Checking Firebase Authentication misconfigurations...\n";
+
+            try {
+                // Initialize Firebase
+                const app = initializeFirebase(projectId, apiKey);
+
+                // You can add checks for misconfigurations here, e.g., insufficient sign-in methods, CORS, etc.
+                // Check various aspects of Firebase Authentication and display the results in the 'resultsElement'.
+
+                // Example:
+                // Check for anonymous sign-in
+                if (app.auth().isSignInWithEmailLink("example@example.com")) {
+                    resultsElement.textContent += "Anonymous Sign-In is enabled.\n";
+                } else {
+                    resultsElement.textContent += "Anonymous Sign-In is not enabled.\n";
+                }
+
+                // Example:
+                // Check for other misconfigurations
+                // ...
+
+            } catch (error) {
+                resultsElement.textContent += `Error: ${error.message}\n`;
+            }
+        }
+    </script>
 </body>
 </html>
