@@ -58,7 +58,12 @@
     function initializeFirebaseApp() {
         try {
             firebase.initializeApp(firebaseConfig);
-            // You can perform other Firebase actions here once it's initialized.
+            // Check if Firebase Authentication is working by attempting to sign in with a test user
+            firebase.auth().signInWithEmailAndPassword("test@example.com", "password").then(function(user) {
+                console.log("Firebase Authentication is correctly configured. User signed in.");
+            }).catch(function(error) {
+                console.error("Firebase Authentication configuration issue: " + error);
+            });
         } catch (error) {
             console.error("Failed to initialize Firebase: " + error);
         }
