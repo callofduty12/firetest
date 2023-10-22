@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Firebase Test Automation</title>
-
-    <body>
+</head>
+<body>
 <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-analytics.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js"></script>
@@ -15,150 +14,55 @@
 <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.2.0/firebase-remote-config.js"></script>
 
-
 <div>
-
     <div>
         <font style="font-weight: bolder;font-size: 1.5rem">Setup:</font>
         <br/>
         <label>ProjectID: </label>
-        <input id="projectId" type="text" value="test-479e4"/>
+        <input id="projectId" type="text" placeholder="Enter your Project ID"/>
         <label style="margin-left: 20px">ApiKey: </label>
-        <input id="apiKey" style="width: 40%" type="text" value="AIzaSyDhVz11SelnSNwINRESWO2mWqeuoH8lV1c"/>
-        <button onclick="run()">submit</button>
+        <input id="apiKey" style="width: 40%" type="text" placeholder="Enter your API Key"/>
+        <button onclick="initializeFirebase()">Submit</button>
     </div>
-
     <hr/>
     <div>
         <font style="font-weight: bolder;font-size: 1.5rem">Config:</font>
         <br/>
         <textarea cols="100" rows="10" disabled style="overflow:auto;resize:none" id="configValue"></textarea>
     </div>
-
-    <hr/>
-    <div>
-        <font style="font-weight: bolder;font-size: 1.5rem">Login testing:</font>
-        <br/>
-        <font style="font-size: 1.2rem">Anonymous Login Status: </font>
-        <font id="anonymousStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <font style="font-size: 1.2rem">Signin Link To Email Login Status: </font>
-        <font id="linkToEmailStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <font style="font-size: 1.2rem">Create Account to Login Status: </font>
-        <font id="createAccountStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <font style="font-size: 1.2rem">Token Login Status: </font>
-        <font id="tokenStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <font style="font-size: 1.2rem">Normal Login Status: </font>
-        <font id="normalLoginStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-
-    </div>
-
-    <hr/>
-
-    <div>
-        <font style="font-weight: bolder;font-size: 1.5rem">Firebase Storage:</font>
-        <br/>
-        <font style="font-size: 1.2rem">Upload Status: </font>
-        <font id="storageEditStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <font style="font-size: 1.2rem">View Status: </font>
-        <font id="storageViewStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-
-    </div>
-
-    <hr/>
-
-    <div>
-        <font style="font-weight: bolder;font-size: 1.5rem">Firebase Firestore:</font>
-        <br/>
-        <font style="font-size: 1.2rem">Edit Status: </font>
-        <font id="firestoreEditStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <font style="font-size: 1.2rem">View Status: </font>
-        <font id="firestoreViewStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-
-    </div>
-
-    <hr/>
-
-    <div>
-        <font style="font-weight: bolder;font-size: 1.5rem">Firebase Realtime Database:</font>
-        <br/>
-        <font style="font-size: 1.2rem">Write Permission: </font>
-        <font id="dbEditStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <font style="font-size: 1.2rem">Read Permission: </font>
-        <font id="dbViewStatus" style="font-weight: bolder;font-size: 1rem">N/A</font>
-        <br/>
-        <textarea cols="100" rows="4" disabled style="overflow:auto;resize:none" id="dbValue"></textarea>
-
-    </div>
-
-
+    <!-- Rest of your UI elements -->
 </div>
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js';
-        import { getAuth, signInAnonymously, createUserWithEmailAndPassword, sendSignInLinkToEmail, signInWithCustomToken, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-auth.js';
-        import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-firestore.js';
-        import { getStorage } from 'https://www.gstatic.com/firebasejs/9.2.0/firebase-storage.js';
 
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyA4iA8S9NeAHYUo5MUWME4EdXNOGe-EuCc", 
-            authDomain: "onedrive-android.firebaseapp.com",
-            databaseURL: "https://onedrive-android.firebaseio.co",
-            projectId: "onedrive-android",
-            storageBucket: "onedrive-android.appspot.com",
+<script>
+    var firebaseConfig; // Firebase configuration object
+
+    function initializeFirebase() {
+        var project_id_value = document.getElementById("projectId").value;
+        var api_key_value = document.getElementById("apiKey").value;
+        firebaseConfig = {
+            apiKey: api_key_value,
+            authDomain: project_id_value + ".firebaseapp.com",
+            databaseURL: "https://" + project_id_value + ".firebaseio.com",
+            projectId: project_id_value,
+            storageBucket: project_id_value + ".appspot.com",
             appId: "111",
+            measurementId: "111222"
         };
+        var myJSON = JSON.stringify(firebaseConfig, null, "\t");
+        document.getElementById("configValue").value = myJSON;
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const firestore = getFirestore(app);
-        const storage = getStorage(app);
+        // Now, you can initialize Firebase using this configuration
+        initializeFirebaseApp();
+    }
 
-        async function checkFirebase() {
-            
-            try {
-                const anonymousUser = await signInAnonymously(auth);
-                console.log("Anonymous Login Success:", anonymousUser);
-
-                
-            } catch (error) {
-                console.error("Anonymous Login Error:", error);
-            }
-
-           
-            try {
-                const docRef = doc(collection(firestore, "test"), "testuser");
-                await setDoc(docRef, { name: "Hello 123123 - h1 aditi new new new new" });
-                console.log("Firestore Write Success");
-
-                
-            } catch (error) {
-                console.error("Firestore Write Error:", error);
-            }
-
-           
-            const storageRef = ref(storage, "/aditi.txt");
-
-            try {
-                await put(storageRef, new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x20, 0x6c, 0x61, 0x6d, 0x73, 0x63, 0x75, 0x6e]));
-                console.log("Storage Upload Success");
-
-               
-            } catch (error) {
-                console.error("Storage Upload Error:", error);
-            }
+    function initializeFirebaseApp() {
+        try {
+            firebase.initializeApp(firebaseConfig);
+            // You can perform other Firebase actions here once it's initialized.
+        } catch (error) {
+            console.error("Failed to initialize Firebase: " + error);
         }
-    </script>
-        </body>
-</head>
-<body>
-    <h1>Firebase Test Automation</h1>
-    <button onclick="checkFirebase()">Check Firebase Configuration</button>
+    }
+</script>
 </body>
 </html>
