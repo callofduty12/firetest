@@ -40,16 +40,94 @@
 
         firebase.initializeApp(firebaseConfig);
 
-        // ... (rest of the code remains the same)
+        // Firebase Authentication
+        firebase.auth().signInAnonymously()
+            .then(function (userCredential) {
+                var user = userCredential.user;
+                console.log("Authentication Successful:", user);
 
-        // Display results on the UI
-        var resultsDiv = document.getElementById("results");
-        resultsDiv.innerHTML = "<strong>Results:</strong><br>";
+                // Display results on the UI
+                var resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = "<strong>Results:</strong><br>";
+                resultsDiv.innerHTML += "<p>Authentication Result: Success (Check console log for details)</p>";
 
-        resultsDiv.innerHTML += "<p>Authentication Result: Check console log</p>";
+                // Firebase Firestore
+                var firestore = firebase.firestore();
+                firestore.collection("test").doc("testdoc").set({ data: "Firestore Write Test" })
+                    .then(function () {
+                        console.log("Firestore Write Successful");
+                        resultsDiv.innerHTML += "<p>Firestore Write Result: Success</p>";
+                    })
+                    .catch(function (error) {
+                        console.log("Firestore Write Failed:", error);
+                        resultsDiv.innerHTML += "<p>Firestore Write Result: Failed (" + error.message + ")</p>";
+                    });
 
-        // You can append more results as needed based on your checks
+                firestore.collection("test").doc("testdoc").get()
+                    .then(function (doc) {
+                        console.log("Firestore Read Successful:", doc.data());
+                        resultsDiv.innerHTML += "<p>Firestore Read Result: Success (Check console log for details)</p>";
+                    })
+                    .catch(function (error) {
+                        console.log("Firestore Read Failed:", error);
+                        resultsDiv.innerHTML += "<p>Firestore Read Result: Failed (" + error.message + ")</p>";
+                    });
 
+                // Firebase Realtime Database
+                var database = firebase.database();
+                database.ref("/test").set({ data: "Realtime Database Write Test" })
+                    .then(function () {
+                        console.log("Realtime Database Write Successful");
+                        resultsDiv.innerHTML += "<p>Realtime Database Write Result: Success</p>";
+                    })
+                    .catch(function (error) {
+                        console.log("Realtime Database Write Failed:", error);
+                        resultsDiv.innerHTML += "<p>Realtime Database Write Result: Failed (" + error.message + ")</p>";
+                    });
+
+                database.ref("/test").once("value")
+                    .then(function (snapshot) {
+                        console.log("Realtime Database Read Successful:", snapshot.val());
+                        resultsDiv.innerHTML += "<p>Realtime Database Read Result: Success (Check console log for details)</p>";
+                    })
+                    .catch(function (error) {
+                        console.log("Realtime Database Read Failed:", error);
+                        resultsDiv.innerHTML += "<p>Realtime Database Read Result: Failed (" + error.message + ")</p>";
+                    });
+
+                // Firebase Storage
+                var storage = firebase.storage();
+                var storageRef = storage.ref("test/testfile.txt");
+                var fileContent = "Firebase Storage Write Test";
+
+                storageRef.putString(fileContent)
+                    .then(function (snapshot) {
+                        console.log("Storage Write Successful");
+                        resultsDiv.innerHTML += "<p>Storage Write Result: Success</p>";
+                    })
+                    .catch(function (error) {
+                        console.log("Storage Write Failed:", error);
+                        resultsDiv.innerHTML += "<p>Storage Write Result: Failed (" + error.message + ")</p>";
+                    });
+
+                storageRef.getDownloadURL()
+                    .then(function (url) {
+                        console.log("Storage Read Successful. Download URL:", url);
+                        resultsDiv.innerHTML += "<p>Storage Read Result: Success (Check console log for details)</p>";
+                    })
+                    .catch(function (error) {
+                        console.log("Storage Read Failed:", error);
+                        resultsDiv.innerHTML += "<p>Storage Read Result: Failed (" + error.message + ")</p>";
+                    });
+            })
+            .catch(function (error) {
+                console.log("Authentication Failed:", error);
+
+                // Display results on the UI
+                var resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = "<strong>Results:</strong><br>";
+                resultsDiv.innerHTML += "<p>Authentication Result: Failed (" + error.message + ")</p>";
+            });
     }
 </script>
 
